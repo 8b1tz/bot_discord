@@ -48,7 +48,8 @@ async def fetch_all_enables():
         response = await client.get(external_api_url_handitems)
         if response.status_code == 200:
             data = response.json()
-            filtered_data = {key: value for key, value in data.items() if key.startswith("fx_")}
+            filtered_data = {key: value for key, value in data.items() 
+                             if key.startswith("fx_")}
             all_enables = filtered_data
             enables_loaded = True
         else:
@@ -77,9 +78,11 @@ async def hand(ctx, id: str = '*'):
     user = ctx.author.display_name
 
     if id == "*":
-        items_formatted = [f"{name}: {handitem_id}" for name, handitem_id in all_handitems.items()]
-        chunk_size = 50  # Tamanho aproximado para cada mensagem
-        chunks = [items_formatted[i:i + chunk_size] for i in range(0, len(items_formatted), chunk_size)]
+        items_formatted = [f"{name}: {handitem_id}" for name, handitem_id in 
+                           all_handitems.items()]
+        chunk_size = 50
+        chunks = [items_formatted[i:i + chunk_size] for i in 
+                  range(0, len(items_formatted), chunk_size)]
 
         for chunk in chunks:
             formatted_chunk = "```\n" + "\n".join(chunk) + "\n```"
@@ -87,10 +90,11 @@ async def hand(ctx, id: str = '*'):
     else:
         try:
             if not id.isdigit():
-                # Busca por aproximação com um cutoff mais baixo
-                matching_items = get_close_matches(id.lower(), all_handitems.keys(), n=5, cutoff=0.6)
+                matching_items = get_close_matches(id.lower(), 
+                                                   all_handitems.keys(), n=5, cutoff=0.6)
                 if matching_items:
-                    matched_results = [f"{all_handitems[name]}: {name}" for name in matching_items]  # Invertendo a ordem
+                    matched_results = [f"{all_handitems[name]}: {name}" for name in matching_items]  
+                    
                     formatted_result = "\n".join(matched_results)
                     await ctx.send(f"Opções próximas:\n```{formatted_result}```")
                     return
@@ -165,8 +169,38 @@ async def enable(ctx, effect_id: str = '*'):
         await ctx.send("Por favor, forneça um ID válido para o efeito.")
 
 
+@bot.command()
+async def wired(ctx, wired_type: str = '*'):
+    pass
 
 
+@bot.command()
+async def image(ctx, theme: str):
+    pass
 
+
+@bot.command()
+async def badge(ctx, id_badge: int = '*'):
+    pass
+
+
+@bot.command()
+async def match(ctx, user: str, other_user: str):
+    pass
+
+
+@bot.command()
+async def commands(ctx):
+    pass
+
+
+@bot.command()
+async def socar(ctx, other_user: str):
+    pass
+
+
+@bot.command()
+async def beijar(ctx, other_user: str):
+    pass
 
 bot.run('MTE4MzUzMDAyMDI3NTIzNjkyNA.GlE1p-.OdrN51TJybmFu_QMSF3jD61bf1TYV18aLtLGog')
