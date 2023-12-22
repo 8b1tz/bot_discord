@@ -136,8 +136,10 @@ async def enable(ctx, effect_id: str = '*'):
             effects_formatted = []
             for effect_id, effect_name in all_enables.items():
                 if not effect_id.endswith('_desc'):
-                    effect_desc = all_enables.get(f"{effect_id}_desc", "Descrição não encontrada")
-                    formatted_effect = f"{effect_name}: {effect_id.split('_')[1]}"
+                    effect_desc = all_enables.get(f"{effect_id}_desc", 
+                                                  "Descrição não encontrada")
+                    formatted_effect = f"{effect_name}: \
+                        {effect_id.split('_')[1]}"
                     effects_formatted.append(formatted_effect)
 
             chunk_size = 10  # Reduzindo o tamanho dos chunks
