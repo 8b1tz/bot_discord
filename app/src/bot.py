@@ -1,5 +1,6 @@
 import asyncio
 import io
+from difflib import get_close_matches
 
 import httpx
 import pandas as pd
@@ -85,24 +86,34 @@ async def hand(ctx, id: str = '*'):
             await ctx.send(formatted_chunk)
     else:
         try:
-            handitem_id = int(id)
-            for name, item_id in all_handitems.items():
-                if item_id == handitem_id:
-                    image_api = f"https://imager.radiohabblet.com.br/?user={user}&action=std,crr={id}&gesture=std&direction=4&head_direction=4&headonly=false&size=b&img_format=&dance=&effect=&frame_num=30"
-                    async with httpx.AsyncClient() as client:
-                        image_response = await client.get(image_api)
-                        image_data = image_response.content
-
-                    if image_response.status_code == 200:
-                        image_file = io.BytesIO(image_data)
-                        embed = Embed(title=f"**{name} \nID:** {handitem_id}", description="Veja o item abaixo:", color=0x00ff00)
-                        embed.set_image(url="attachment://image.png")
-
-                        await ctx.send(file=File(image_file, filename="image.png"), embed=embed)
-                    else:
-                        message = f"**{name}: {handitem_id}**"
-                        await ctx.send(message)
+            if not id.isdigit():
+                # Busca por aproximação com um cutoff mais baixo
+                matching_items = get_close_matches(id.lower(), all_handitems.keys(), n=5, cutoff=0.6)
+                if matching_items:
+                    matched_results = [f"{all_handitems[name]}: {name}" for name in matching_items]  # Invertendo a ordem
+                    formatted_result = "\n".join(matched_results)
+                    await ctx.send(f"Opções próximas:\n```{formatted_result}```")
                     return
+
+            else:
+                handitem_id = int(id)
+                for name, item_id in all_handitems.items():
+                    if item_id == handitem_id:
+                        image_api = f"https://imager.radiohabblet.com.br/?user={user}&action=std,crr={id}&gesture=std&direction=4&head_direction=4&headonly=false&size=b&img_format=&dance=&effect=&frame_num=30"
+                        async with httpx.AsyncClient() as client:
+                            image_response = await client.get(image_api)
+                            image_data = image_response.content
+
+                        if image_response.status_code == 200:
+                            image_file = io.BytesIO(image_data)
+                            embed = Embed(title=f"**{name} \nID:** {handitem_id}", description="Veja o item abaixo:", color=0x00ff00)
+                            embed.set_image(url="attachment://image.png")
+
+                            await ctx.send(file=File(image_file, filename="image.png"), embed=embed)
+                        else:
+                            message = f"**{name}: {handitem_id}**"
+                            await ctx.send(message)
+                        return
             await ctx.send("Handitem não encontrado.")
         except ValueError:
             await ctx.send("Por favor, forneça um ID válido para o handitem.")
@@ -122,7 +133,7 @@ async def enable(ctx, effect_id: str = '*'):
             for effect_id, effect_name in all_enables.items():
                 if not effect_id.endswith('_desc'):
                     effect_desc = all_enables.get(f"{effect_id}_desc", "Descrição não encontrada")
-                    formatted_effect = f"**ID:** {effect_id.split('_')[1]}\n**Nome:** {effect_name}\n**Descrição:** {effect_desc}"
+                    formatted_effect = f"{effect_name}: {effect_id.split('_')[1]}"
                     effects_formatted.append(formatted_effect)
 
             chunk_size = 10  # Reduzindo o tamanho dos chunks
