@@ -1,58 +1,66 @@
-from models import Enable, Handitem
-from repository import get_enable_by_id
+import re
+
+from .base_api import BaseHabbletApi
 
 
-class HabbletApi:
-    
-    def get_user_by_name(self, name):
-        pass
+class HabbletApi(BaseHabbletApi):
+    def __init__(self) -> None:
+        super().__init__()
 
-    def get_handitem_id(self, id: int = 0) -> list[Handitem]:
-        pass
-        # api_url = "https://images.habblet.city/leet-asset-bundles/gamedata/\
-        # habblet_texts.json"
-        # response = self.get(api_url)
-        # handitem_list = []
-        # if response.status == 200:
+    def get_user_by_name(self, name: str) -> dict:
+        api_url = f"https://www.habblet.city/api/player/{name}"
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
+
+    def get_handitem(self) -> list:
+        api_url = (
+            "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
+        )
+
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            pattern = re.compile(r"handitem\d+")
+            dados = response.json()
+            return {
+                int(re.search(r"\d+", chave).group()): valor
+                for chave, valor in dados.items()
+                if pattern.match(chave)
+            }
         #     data = response.json()
 
-    def get_enables_id(self, id: int = 0) -> list[Enable]:
-
-        enable_result = get_enable_by_id(enable_id=id)
-
-        if enable_result:
-            return enable_result
-
-        api_url = "https://images.habblet.city/leet-asset-bundles/gamedata/\
-        avatar/EffectMap.json?v=109"
-        response = self.get(api_url)
+    def get_enables(self) -> list:
+        api_url = (
+            "https://images.habblet.city/leet-asset-bundles/gamedata/"
+            "avatar/EffectMap.json?v=109"
+        )
+        response = self._get(api_url)
         enables_list = []
 
         if response.status_code == 200:
             data = response.json()
             enables_data = data.get("effects", [])
 
-            fx_enables_data = filter(
-                lambda x: x.get("type") == "fx",
-                enables_data
-            )
+            fx_enables_data = filter(lambda x: x.get("type") == "fx", enables_data)
 
             enables_list.extend(
-                Enable(
-                    id=enable_data.get("id"),
-                    name=enable_data.get("lib")
-                )
+                {"id": enable_data.get("id"), "name": enable_data.get("lib")}
                 for enable_data in fx_enables_data
             )
+            return enables_list
 
-        else:
-            raise Exception(
-                f"Falha na requisição para API: {api_url}. "
-                f"Status Code: {response.status_code}"
-            )
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
 
-        return enables_list
-    
     def get_badge_by_id(self, id: int):
         pass
 

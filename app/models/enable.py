@@ -7,4 +7,3 @@ class Enable(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     image = Column(String)
-
