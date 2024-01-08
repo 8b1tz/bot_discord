@@ -19,6 +19,54 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
+    def get_groups_by_player_name(self, name: str) -> dict:
+        api_url = f"https://www.habblet.city/api/player/{name}/groups"
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
+
+    def get_rooms_by_player_name(self, name: str) -> dict:
+        api_url = f"https://www.habblet.city/api/player/{name}/rooms"
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
+
+    def get_badges_by_player_name(self, name: str) -> dict:
+        api_url = f"https://www.habblet.city/api/player/{name}/badges"
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
+
+    def get_friends_by_player_name(self, name: str) -> dict:
+        api_url = f"https://www.habblet.city/api/player/{name}/friends"
+        response = self._get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
+
     def get_handitem(self) -> list:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
