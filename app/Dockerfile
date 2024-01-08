@@ -6,9 +6,12 @@ WORKDIR /app
 
 COPY src /app/src
 COPY requirements.txt /app/requirements.txt
-COPY db /app/db
 COPY scripts /app/scripts
 
+# Atualizar o pip
+RUN pip install --upgrade pip
+
+# Instalar as dependências
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Seu comando para iniciar a aplicação sem uvicorn

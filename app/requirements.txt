@@ -12,3 +12,5 @@ uvicorn==0.24.0.post1
 httpx==0.25.2
 pandas==2.1.4
 discord.py==2.3.2
+Pillow==10.1.0
+discord-py-interactions==5.11.0

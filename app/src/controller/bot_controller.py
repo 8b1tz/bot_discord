@@ -19,7 +19,3 @@ def inserir_dados_hand(nome, imagem):
     conexao.close()
 
 
-inserir_dados_enable('Nome1', b'dados_da_imagem1')
-
-
-inserir_dados_hand('Nome2', b'dados_da_imagem2')
