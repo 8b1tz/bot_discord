@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:14-alpine
+    volumes:
+      - postgres_lol_analytics:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
