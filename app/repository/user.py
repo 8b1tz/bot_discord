@@ -22,6 +22,26 @@ def get_all_users(db: Session) -> list[User]:
 
 
 @dec_session_local
+def get_all_groups_by_user(db: Session) -> list[User]:
+    pass
+
+
+@dec_session_local
+def get_all_rooms_by_user(db: Session) -> list[User]:
+    pass
+
+
+@dec_session_local
+def get_all_badges_by_user(db: Session) -> list[User]:
+    pass
+
+
+@dec_session_local
+def get_all_friends_by_user(db: Session) -> list[User]:
+    pass
+
+
+@dec_session_local
 def update_player(db: Session, user_id: str, updated_user: User) -> User:
     existing_item = db.query(User).filter(User.id == user_id).first()
     if existing_item:
