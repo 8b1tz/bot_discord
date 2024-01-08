@@ -28,15 +28,18 @@ class HabbletApi(BaseHabbletApi):
 
         if response.status_code == 200:
             pattern = re.compile(r"handitem\d+")
-            dados = response.json()
+            data = response.json()
             return {
                 int(re.search(r"\d+", chave).group()): valor
-                for chave, valor in dados.items()
+                for chave, valor in data.items()
                 if pattern.match(chave)
             }
-        #     data = response.json()
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
 
-    def get_enables(self) -> list:
+    def get_enables(self) -> list[dict]:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/"
             "avatar/EffectMap.json?v=109"
@@ -61,8 +64,28 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
-    def get_badge_by_id(self, id: int):
-        pass
+    def get_badges(self) -> list[dict]:
+        api_url = (
+            "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
+        )
+        response = self._get(api_url)
+        if response.status_code == 200:
+            pattern = re.compile(r"badge_name_(?!ACH)(\w+)")
+            data = response.json()
+            dict_badges = {}
+            for chave in data.keys():
+                if pattern.match(chave):
+                    badge_id = re.search(r"badge_name_(\w+)", chave).group(1)
+                    dict_badges[badge_id] = {
+                        "name": data[f"badge_name_{badge_id}"],
+                        "desc": data.get(f"badge_desc_{badge_id}", ""),
+                    }
+            return dict_badges
+
+        raise Exception(
+            f"Falha na requisição para API: {api_url}. "
+            f"Status Code: {response.status_code}"
+        )
 
     def get_new_badge_in_game(self):
         pass
