@@ -26,7 +26,11 @@ def insert_handitem(db: SessionLocal, handitem: Handitem) -> Handitem:
 
 
 @dec_session_local
-def update_handitem(db: SessionLocal, id: str, update_handitem: Handitem) -> Handitem:
+def update_handitem(
+    db: SessionLocal,
+    id: str,
+    update_handitem: Handitem
+) -> Handitem:
     existing_item = db.query(Handitem).filter(Handitem.id == id).first()
     if existing_item:
         for key, value in update_handitem.to_dict().items():
