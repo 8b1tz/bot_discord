@@ -1,21 +1,24 @@
 from database import Base
-from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String,
-                        relationship)
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
     __tablename__ = "user"
-    id = Column(String, primary_key=True, auto_increment=True)
-    username = Column(String)
+    id = Column(Integer, autoincrement=True)
+    username = Column(String, primary_key=True, nullable=False, unique=True)  
     reg_date = Column(DateTime)
     achievement_points = Column(Integer)
     image_id = Column(String)
     gender = Column(String(1))
-    friends = relationship(
-        "User",
-        secondary="friendship",
-        primaryjoin=id == ForeignKey("friendship.user_id"),
-        secondaryjoin=id == ForeignKey("friendship.friend_id")
+
+    # Relacionamentos
+    friendships = relationship(
+        'User',
+        secondary='friendship',
+        primaryjoin='User.username == Friendship.user_id',
+        secondaryjoin='User.username == Friendship.friend_id',
+        backref='friends'
     )
     groups = relationship("Group", secondary="user_group")
     rooms = relationship("Room", secondary="user_room")
@@ -31,7 +34,7 @@ class Group(Base):
 
 class UserGroup(Base):
     __tablename__ = "user_group"
-    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
+    user_id = Column(String, ForeignKey("user.username"), primary_key=True)
     group_id = Column(Integer, ForeignKey("group.id"), primary_key=True)
 
 
@@ -44,8 +47,8 @@ class Room(Base):
 
 class UserRoom(Base):
     __tablename__ = "user_room"
-    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
-    room_id = Column(Integer, ForeignKey("room.id"), primary_key=True)
+    user_id = Column(String, ForeignKey("user.username"), primary_key=True)
+    room_id = Column(Integer, ForeignKey("room.id"), primary_key=True) 
 
 
 class Badge(Base):
@@ -57,11 +60,11 @@ class Badge(Base):
 
 class UserBadge(Base):
     __tablename__ = "user_badge"
-    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
+    user_id = Column(String, ForeignKey("user.username"), primary_key=True)  
     badge_id = Column(Integer, ForeignKey("badge.id"), primary_key=True)
 
 
 class Friendship(Base):
     __tablename__ = "friendship"
-    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
-    friend_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
+    user_id = Column(String, ForeignKey('user.username'), primary_key=True)
+    friend_id = Column(String, ForeignKey('user.username'), primary_key=True)
