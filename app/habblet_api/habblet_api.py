@@ -67,7 +67,7 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
-    def get_handitem(self) -> list:
+    def get_handitem(self) -> list[dict]:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
         )
@@ -77,11 +77,12 @@ class HabbletApi(BaseHabbletApi):
         if response.status_code == 200:
             pattern = re.compile(r"handitem\d+")
             data = response.json()
-            return {
-                int(re.search(r"\d+", chave).group()): valor
+            return [
+                {"id": int(re.search(r"\d+", chave).group()), "name": valor}
                 for chave, valor in data.items()
                 if pattern.match(chave)
-            }
+            ]
+
         raise Exception(
             f"Falha na requisição para API: {api_url}. "
             f"Status Code: {response.status_code}"
