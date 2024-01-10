@@ -54,13 +54,46 @@ class Dropdown(discord.ui.Select):
                 view=CreateTicket()
             )
         elif self.values[0] == "team_ticket":
-            await interaction.response.send_message(
-                "O usuário escolheu team",
-                ephemeral=True,
-                view=CreateTicket()
-            )
 
-            
+            embed = discord.Embed(
+            colour=discord.Color.gold(),
+            title="Escolha para qual cargo você gostaria de se candidatar",
+            description="Escolha uma das opções abaixo para se candidatar ao cargo desejado:"
+        )
+
+        embed.add_field(
+            name="Promotor",
+            value="Este cargo é responsável por divulgar eventos e atividades, promovendo e atraindo participantes para as atividades do servidor."
+        )
+
+        embed.add_field(
+            name="Programador",
+            value="O cargo de Programador envolve ajudar no desenvolvimento de soluções tecnológicas e ferramentas para o servidor, contribuindo com código e ideias inovadoras."
+        )
+
+        embed.add_field(
+            name="Conteúdo",
+            value="A posição de Conteúdo é ideal para aqueles que desejam criar e editar conteúdo, como textos, imagens ou vídeos para os eventos e atividades do servidor."
+        )
+
+        embed.add_field(
+            name="Marketing",
+            value="Os membros do cargo de Marketing são responsáveis por criar estratégias de marketing e promoção para aumentar a visibilidade e participação nas atividades do servidor."
+        )
+
+        embed.add_field(
+            name="Locutor",
+            value="O cargo de Locutor envolve a narração e apresentação de eventos, criando uma atmosfera envolvente para os participantes durante as atividades do servidor."
+        )
+        embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper.png?raw=true")
+        await interaction.response.send_message(
+            "O usuário escolheu team",
+            ephemeral=True,
+            view=TicketButtons(),
+            embed=embed,
+        )
+
+        
 class CreateTicket(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=300)
@@ -105,6 +138,7 @@ class CreateTicket(discord.ui.View):
                                                 content=f"Criei um ticket para você! {ticket.mention}")
         await ticket.send(f"✉️ **|** {interaction.user.mention} \
                         ticket criado! \n\n <@1193661140673245276>")
+        
 
 
 class DropdownView(discord.ui.View):
@@ -149,13 +183,16 @@ async def setup(interaction: discord.Interaction):
 
 
 @tree.command(guild=discord.Object(id=id_server), name="fecharticket", description="Fecha o ticket")
+@commands.has_permissions(manage_guild=True)
 async def fecharticket(interaction: discord.Interaction):
     mod = interaction.guild.get_role(1193661140673245276)
-    if str(interaction.user.id) in interaction.channel.name or mod in interaction.author.role:
-        await interaction.response.send_message(f'O ticket foi arquivado por {interaction.user.name}')
-        await interaction.channel.archived(Locked=True)
-    else:
-        await interaction.response.send_message("Isso não pode ser feito")
+    try:
+        if str(interaction.user.id) in interaction.channel.name or mod in interaction.author.role:
+            await interaction.channel.delete()
+        else:
+            await interaction.response.send_message("Isso não pode ser feito")
+    except Exception as e:
+        await interaction.response.send_message(e)
 
 
 @tree.command(guild=discord.Object(id=id_server), name='enable')
@@ -166,5 +203,53 @@ async def enable(interaction: discord.Interaction):
 @tree.command(guild=discord.Object(id=id_server), name='handitem')
 async def handitem(interaction: discord.Interaction):
     await interaction.response.send_message('teste handitem')
+
+
+async def create_ticket(interaction, ticket_type):
+    ticket = None
+    for thread in interaction.channel.threads:
+        if f"{interaction.user.id}" in thread.name:
+            if thread.archived:
+                ticket = thread
+            else:
+                await interaction.response.send_message(
+                    ephemeral=True,
+                    content="Você já está em atendimento"
+                )
+                return
+    else:
+        ticket = await interaction.channel.create_thread(
+            name=f"Equipe {ticket_type} - {interaction.user.name} ({interaction.user.id})"
+        )
+
+    await interaction.response.send_message(
+        ephemeral=True,
+        content=f"Criei um ticket de {ticket_type.lower()} para você! {ticket.mention}"
+    )
+    await ticket.send(
+        f"✉️ **|** {interaction.user.mention} ticket criado! \n\n <@1193661140673245276>"
+    )
+
+
+class TicketButtons(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        button_data = [
+            {"label": "Promotor", "custom_id": "promotor_ticket"},
+            {"label": "Programador", "custom_id": "programador_ticket"},
+            {"label": "Conteúdo", "custom_id": "conteudo_ticket"},
+            {"label": "Marketing", "custom_id": "marketing_ticket"},
+            {"label": "Locutor", "custom_id": "locutor_ticket"}
+        ]
+
+        for data in button_data:
+            button = discord.ui.Button(
+                label=data["label"],
+                style=discord.ButtonStyle.blurple,
+                custom_id=data["custom_id"]
+            )
+            self.add_item(button)
+
+
 
 aclient.run(TOKEN)
