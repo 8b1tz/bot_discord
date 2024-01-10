@@ -6,5 +6,3 @@ class Handitem(Base):
     __tablename__ = "handitem"
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    image = Column(String)
-

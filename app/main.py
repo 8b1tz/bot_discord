@@ -146,13 +146,13 @@ async def setup(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed, view=DropdownView())
 
 
-# @tree.command()
-# async def enable():
-#     pass
+@tree.command(guild=discord.Object(id=id_server), name='enable')
+async def enable(interaction: discord.Interaction):
+    await interaction.response.send_message('teste enable')
 
 
-# @tree.command()
-# async def handitem():
-#     pass
+@tree.command(guild=discord.Object(id=id_server), name='handitem')
+async def handitem(interaction: discord.Interaction):
+    await interaction.response.send_message('teste handitem')
 
 aclient.run(TOKEN)
