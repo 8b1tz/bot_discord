@@ -51,7 +51,7 @@ class Dropdown(discord.ui.Select):
             await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
-                view=CreateTicket()
+                view=CreateTicket('Suporte')
             )
         elif self.values[0] == "team_ticket":
             embed = discord.Embed(
@@ -136,7 +136,7 @@ class CreateTicket(discord.ui.View):
             await ticket.edit(invitable=False)      
         await interaction.response.send_message(ephemeral=True, 
                                                 content=f"Criei um ticket para você! {ticket.mention}")
-        await ticket.send(f"✉️ **|** {interaction.user.mention} \
+        await ticket.send(f"✉️ **|** {interaction.user.mention} \   
                         ticket criado! \n\n <@1193661140673245276>")
         
 
@@ -177,7 +177,7 @@ async def setup(interaction: discord.Interaction):
         title="Central do servidor Habbear",
         description="Aqui você poderá entrar em contato com a equipe Habbear"
     )
-    embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper.png?raw=true")
+    embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper_ticket.png?raw=true")
 
     await interaction.channel.send(embed=embed, view=DropdownView())
 
@@ -195,14 +195,14 @@ async def fecharticket(interaction: discord.Interaction):
         await interaction.response.send_message(e, ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=id_server), name='enable')
-async def enable(interaction: discord.Interaction):
-    await interaction.response.send_message('teste enable', ephemeral=True)
+# @tree.command(guild=discord.Object(id=id_server), name='enable')
+# async def enable(interaction: discord.Interaction):
+#     await interaction.response.send_message('teste enable', ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=id_server), name='handitem')
-async def handitem(interaction: discord.Interaction):
-    await interaction.response.send_message('teste handitem', ephemeral=True)
+# @tree.command(guild=discord.Object(id=id_server), name='handitem')
+# async def handitem(interaction: discord.Interaction):
+#     await interaction.response.send_message('teste handitem', ephemeral=True)
 
 
 class TicketButtons(discord.ui.View):
