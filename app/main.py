@@ -19,8 +19,10 @@ Base.metadata.create_all(bind=engine, tables=[
     Badge.__table__,
     Group.__table__])
 
+load_dotenv()
 
-id_server = '1187985085249630208'
+TOKEN = os.getenv('DISCORD_BOT_SECRET')
+id_server = os.getenv('ID_SERVER')
 
 
 class Dropdown(discord.ui.Select):
@@ -33,11 +35,7 @@ class Dropdown(discord.ui.Select):
             discord.SelectOption(
                 value="team_ticket",
                 label="Entre para equipe",
-                emoji="👷"),
-            discord.SelectOption(
-                value="report_ticket",
-                label="Fazer denuncia",
-                emoji="🚨")
+                emoji="👷")
         ]
         super().__init__(
             placeholder="Selecione uma opção",
@@ -57,12 +55,6 @@ class Dropdown(discord.ui.Select):
         elif self.values[0] == "team_ticket":
             await interaction.response.send_message(
                 "O usuário escolheu team",
-                ephemeral=True,
-                view=CreateTicket()
-            )
-        elif self.values[0] == "report_ticket":
-            await interaction.response.send_message(
-                "O usuário escolheu report",
                 ephemeral=True,
                 view=CreateTicket()
             )
@@ -91,17 +83,24 @@ class CreateTicket(discord.ui.View):
                 if thread.archived:
                     ticket = thread
                 else:
-                    await interaction.response.send_message(ephemeral=True, content=f"Você já está em atendimento")
+                    await interaction.response.send_message(
+                        ephemeral=True, 
+                        content=f"Você já está em atendimento")
                     return
         if ticket is not None:
             await ticket.unarchive()
-            await ticket.edit(name=f"{self.emoji} {interaction.user.name} ({interaction.user.id})", auto_archive_duration=10080, invitable=False)
+            await ticket.edit(name=f"{self.emoji} 
+                {interaction.user.name} 
+                ({interaction.user.id})", 
+                auto_archive_duration=10080, 
+                invitable=False)
         else:
             ticket = await interaction.channel.create_thread(name=f"{interaction.user.name} ({interaction.user.id})", auto_archive_duration=10080)
             await ticket.edit(invitable=False)
         
         await interaction.response.send_message(ephemeral=True, content=f"Criei um ticket para você! {ticket.mention}")
         await ticket.send(f"✉️ **|** {interaction.user.mention} ticket criado! \n\n <@1193661140673245276>")
+
 
 class DropdownView(discord.ui.View):
     def __init__(self):
@@ -132,17 +131,24 @@ tree = app_commands.CommandTree(aclient)
 
 @tree.command(guild=discord.Object(id=id_server), name='setup')
 async def setup(interaction: discord.Interaction):
-    await interaction.response.send_message("Mensagem", view=DropdownView())
 
     embed = discord.Embed(
         colour=discord.Color.gold(),
         title="Central do servidor Habbear",
         description="Aqui você poderá entrar em contato com a equipe Habbear"
     )
-    embed.set_image(url="imgs/wallpaper.png")
+    embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper.png?raw=true")
 
     await interaction.channel.send(embed=embed, view=DropdownView())
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_BOT_SECRET')
+
+# @tree.command()
+# async def enable():
+#     pass
+
+
+# @tree.command()
+# async def handitem():
+#     pass
+
 aclient.run(TOKEN)
