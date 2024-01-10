@@ -14,11 +14,10 @@ class User(Base):
 
     # Relacionamentos
     friendships = relationship(
-        'User',
-        secondary='friendship',
-        primaryjoin='User.username == Friendship.user_id',
-        secondaryjoin='User.username == Friendship.friend_id',
-        backref='friends'
+        'Friendship',
+        foreign_key='Friendship.user_id',
+        backref='friends',
+        cascade="all, delete-orphan"
     )
     groups = relationship("Group", secondary="user_group")
     rooms = relationship("Room", secondary="user_room")
@@ -68,3 +67,5 @@ class Friendship(Base):
     __tablename__ = "friendship"
     user_id = Column(String, ForeignKey('user.username'), primary_key=True)
     friend_id = Column(String, ForeignKey('user.username'), primary_key=True)
+
+    friends = relationship("User", foreign_key="User.username", backref="friendships")

@@ -84,22 +84,26 @@ class CreateTicket(discord.ui.View):
                     ticket = thread
                 else:
                     await interaction.response.send_message(
-                        ephemeral=True, 
-                        content=f"Você já está em atendimento")
+                        ephemeral=True,
+                        content="Você já está em atendimento")
                     return
         if ticket is not None:
             await ticket.unarchive()
-            await ticket.edit(name=f"{self.emoji} 
-                {interaction.user.name} 
-                ({interaction.user.id})", 
-                auto_archive_duration=10080, 
+            await ticket.edit(
+                name=f"{self.emoji}" +
+                f"{interaction.user.name}" +
+                f"({interaction.user.id})",
+                auto_archive_duration=10080,
                 invitable=False)
         else:
-            ticket = await interaction.channel.create_thread(name=f"{interaction.user.name} ({interaction.user.id})", auto_archive_duration=10080)
-            await ticket.edit(invitable=False)
-        
-        await interaction.response.send_message(ephemeral=True, content=f"Criei um ticket para você! {ticket.mention}")
-        await ticket.send(f"✉️ **|** {interaction.user.mention} ticket criado! \n\n <@1193661140673245276>")
+            ticket = await interaction.channel.create_thread(
+                name=f"{interaction.user.name} ({interaction.user.id})", 
+                auto_archive_duration=10080)
+            await ticket.edit(invitable=False)      
+        await interaction.response.send_message(ephemeral=True, 
+                                                content=f"Criei um ticket para você! {ticket.mention}")
+        await ticket.send(f"✉️ **|** {interaction.user.mention} \
+                        ticket criado! \n\n <@1193661140673245276>")
 
 
 class DropdownView(discord.ui.View):
