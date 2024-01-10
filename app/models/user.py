@@ -5,8 +5,7 @@ from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "user"
-    id = Column(Integer, autoincrement=True)
-    username = Column(String, primary_key=True, nullable=False, unique=True)  
+    username = Column(String, primary_key=True, nullable=False, unique=True)
     reg_date = Column(DateTime)
     achievement_points = Column(Integer)
     image_id = Column(String)
@@ -15,8 +14,7 @@ class User(Base):
     # Relacionamentos
     friendships = relationship(
         'Friendship',
-        foreign_key='Friendship.user_id',
-        backref='friends',
+        back_populates='user_id',
         cascade="all, delete-orphan"
     )
     groups = relationship("Group", secondary="user_group")
@@ -68,4 +66,4 @@ class Friendship(Base):
     user_id = Column(String, ForeignKey('user.username'), primary_key=True)
     friend_id = Column(String, ForeignKey('user.username'), primary_key=True)
 
-    friends = relationship("User", foreign_key="User.username", backref="friendships")
+    friends = relationship("User", back_populates="username")
