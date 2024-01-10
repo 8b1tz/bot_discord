@@ -3,6 +3,7 @@ import os
 import discord
 from database import Base, engine
 from discord import app_commands
+from discord.ext import commands
 from dotenv import load_dotenv
 from models import (Badge, Enable, Friendship, Group, Handitem, Room, User,
                     UserBadge, UserGroup, UserRoom)
@@ -134,6 +135,7 @@ tree = app_commands.CommandTree(aclient)
 
 
 @tree.command(guild=discord.Object(id=id_server), name='setup')
+@commands.has_permissions(manage_guild=True)
 async def setup(interaction: discord.Interaction):
 
     embed = discord.Embed(
@@ -144,6 +146,16 @@ async def setup(interaction: discord.Interaction):
     embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper.png?raw=true")
 
     await interaction.channel.send(embed=embed, view=DropdownView())
+
+
+@tree.command(guild=discord.Object(id=id_server), name="fecharticket", description="Fecha o ticket")
+async def fecharticket(interaction: discord.Interaction):
+    mod = interaction.guild.get_role(1193661140673245276)
+    if str(interaction.user.id) in interaction.channel.name or mod in interaction.author.role:
+        await interaction.response.send_message(f'O ticket foi arquivado por {interaction.user.name}')
+        await interaction.channel.archived(Locked=True)
+    else:
+        await interaction.response.send_message("Isso não pode ser feito")
 
 
 @tree.command(guild=discord.Object(id=id_server), name='enable')
