@@ -54,55 +54,64 @@ class Dropdown(discord.ui.Select):
                 view=CreateTicket()
             )
         elif self.values[0] == "team_ticket":
-
             embed = discord.Embed(
-            colour=discord.Color.gold(),
-            title="Escolha para qual cargo você gostaria de se candidatar",
-            description="Escolha uma das opções abaixo para se candidatar ao cargo desejado:"
-        )
+                colour=discord.Color.gold(),
+                title="Escolha para qual cargo você gostaria de se candidatar",
+                description="Escolha uma das opções abaixo para se candidatar ao cargo desejado:"
+            )
 
-        embed.add_field(
-            name="Promotor",
-            value="Este cargo é responsável por divulgar eventos e atividades, promovendo e atraindo participantes para as atividades do servidor."
-        )
+            embed.add_field(
+                name="<:emoji_construct:1194708113077579946> Construtor",
+                value="Este cargo é responsável por divulgar eventos e atividades, promovendo e atraindo participantes para as atividades do servidor.",
+                inline=False
+            )
 
-        embed.add_field(
-            name="Programador",
-            value="O cargo de Programador envolve ajudar no desenvolvimento de soluções tecnológicas e ferramentas para o servidor, contribuindo com código e ideias inovadoras."
-        )
+            embed.add_field(
+                name="<:emoji_promoter:1194708133042470933> Promotor",
+                value="Este cargo é responsável por divulgar eventos e atividades, promovendo e atraindo participantes para as atividades do servidor.",
+                inline=False
+            )
 
-        embed.add_field(
-            name="Conteúdo",
-            value="A posição de Conteúdo é ideal para aqueles que desejam criar e editar conteúdo, como textos, imagens ou vídeos para os eventos e atividades do servidor."
-        )
+            embed.add_field(
+                name="<:emoji_programmer:1194707818272534588> Programador",
+                value="O cargo de Programador envolve ajudar no desenvolvimento de soluções tecnológicas e ferramentas para o servidor, contribuindo com código e ideias inovadoras.",
+                inline=False
+            )
+            embed.add_field(
+                name="<:emoji_content:1194708650946744321> Conteúdo",
+                value="A posição de Conteúdo é ideal para aqueles que desejam criar e editar conteúdo, como textos, imagens ou vídeos para os eventos e atividades do servidor.",
+                inline=False,
+            )
 
-        embed.add_field(
-            name="Marketing",
-            value="Os membros do cargo de Marketing são responsáveis por criar estratégias de marketing e promoção para aumentar a visibilidade e participação nas atividades do servidor."
-        )
+            embed.add_field(
+                name="<:emoji_marketing:1194707758700843128> Marketing",
+                value="Os membros do cargo de Marketing são responsáveis por criar estratégias de marketing e promoção para aumentar a visibilidade e participação nas atividades do servidor.",
+                inline=False
+            )
+            embed.add_field(
+                name="<:emoji_locutor:1194707778015600661> Locutor",
+                value="O cargo de Locutor envolve a narração e apresentação de eventos, criando uma atmosfera envolvente para os participantes durante as atividades do servidor.",
+                inline=False
+            )
 
-        embed.add_field(
-            name="Locutor",
-            value="O cargo de Locutor envolve a narração e apresentação de eventos, criando uma atmosfera envolvente para os participantes durante as atividades do servidor."
-        )
-        embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper.png?raw=true")
-        await interaction.response.send_message(
-            "O usuário escolheu team",
-            ephemeral=True,
-            view=TicketButtons(),
-            embed=embed,
-        )
+            embed.set_image(url="https://github.com/8b1tz/bot_discord/blob/main/app/imgs/wallpaper_support.png?raw=true")
+            await interaction.response.send_message(
+                ephemeral=True,
+                view=TicketButtons(),
+                embed=embed,
+            )
 
-        
+
 class CreateTicket(discord.ui.View):
-    def __init__(self):
+    def __init__(self, ticket_type):
         super().__init__(timeout=300)
-        self.value = None
+        self.value = None,
+        self.ticket_type = ticket_type
     
     @discord.ui.button(
         label="Abrir Ticket",
         style=discord.ButtonStyle.blurple,
-        emoji="💬")
+        emoji="<:ticket:1194712252511699015>")
     async def confirm(
         self,
         interaction: discord.Interaction,
@@ -112,15 +121,6 @@ class CreateTicket(discord.ui.View):
         self.stop()
 
         ticket = None
-        for thread in interaction.channel.threads:
-            if f"{interaction.user.id}" in thread.name:
-                if thread.archived:
-                    ticket = thread
-                else:
-                    await interaction.response.send_message(
-                        ephemeral=True,
-                        content="Você já está em atendimento")
-                    return
         if ticket is not None:
             await ticket.unarchive()
             await ticket.edit(
@@ -131,7 +131,7 @@ class CreateTicket(discord.ui.View):
                 invitable=False)
         else:
             ticket = await interaction.channel.create_thread(
-                name=f"{interaction.user.name} ({interaction.user.id})", 
+                name=f"{self.ticket_type if self.ticket_type else ''} {interaction.user.name} ({interaction.user.id})", 
                 auto_archive_duration=10080)
             await ticket.edit(invitable=False)      
         await interaction.response.send_message(ephemeral=True, 
@@ -190,65 +190,84 @@ async def fecharticket(interaction: discord.Interaction):
         if str(interaction.user.id) in interaction.channel.name or mod in interaction.author.role:
             await interaction.channel.delete()
         else:
-            await interaction.response.send_message("Isso não pode ser feito")
+            await interaction.response.send_message( "Isso não pode ser feito", ephemeral=True)
     except Exception as e:
-        await interaction.response.send_message(e)
+        await interaction.response.send_message(e, ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=id_server), name='enable')
 async def enable(interaction: discord.Interaction):
-    await interaction.response.send_message('teste enable')
+    await interaction.response.send_message('teste enable', ephemeral=True)
 
 
 @tree.command(guild=discord.Object(id=id_server), name='handitem')
 async def handitem(interaction: discord.Interaction):
-    await interaction.response.send_message('teste handitem')
-
-
-async def create_ticket(interaction, ticket_type):
-    ticket = None
-    for thread in interaction.channel.threads:
-        if f"{interaction.user.id}" in thread.name:
-            if thread.archived:
-                ticket = thread
-            else:
-                await interaction.response.send_message(
-                    ephemeral=True,
-                    content="Você já está em atendimento"
-                )
-                return
-    else:
-        ticket = await interaction.channel.create_thread(
-            name=f"Equipe {ticket_type} - {interaction.user.name} ({interaction.user.id})"
-        )
-
-    await interaction.response.send_message(
-        ephemeral=True,
-        content=f"Criei um ticket de {ticket_type.lower()} para você! {ticket.mention}"
-    )
-    await ticket.send(
-        f"✉️ **|** {interaction.user.mention} ticket criado! \n\n <@1193661140673245276>"
-    )
+    await interaction.response.send_message('teste handitem', ephemeral=True)
 
 
 class TicketButtons(discord.ui.View):
     def __init__(self):
         super().__init__()
-        button_data = [
-            {"label": "Promotor", "custom_id": "promotor_ticket"},
-            {"label": "Programador", "custom_id": "programador_ticket"},
-            {"label": "Conteúdo", "custom_id": "conteudo_ticket"},
-            {"label": "Marketing", "custom_id": "marketing_ticket"},
-            {"label": "Locutor", "custom_id": "locutor_ticket"}
-        ]
 
-        for data in button_data:
-            button = discord.ui.Button(
-                label=data["label"],
-                style=discord.ButtonStyle.blurple,
-                custom_id=data["custom_id"]
+    @discord.ui.button(label="Promotor",style=discord.ButtonStyle.gray)
+    async def promoter(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Promotor')
             )
-            self.add_item(button)
+
+    @discord.ui.button(label="Construtor",style=discord.ButtonStyle.gray)
+    async def construct(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Construtor')
+            )
+
+    @discord.ui.button(label="Programador",style=discord.ButtonStyle.gray)
+    async def programmer(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Programador')
+            )
+
+    @discord.ui.button(label="Marketing",style=discord.ButtonStyle.gray)
+    async def marketing(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Marketing')
+            )
+
+    @discord.ui.button(label="Conteúdo",style=discord.ButtonStyle.gray)
+    async def content(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Conteudo')
+            )
+        
+    @discord.ui.button(label="Locutor",style=discord.ButtonStyle.gray)
+    async def locuter(self,
+        interaction: discord.Interaction,
+        button: discord.ui.Button):
+        await interaction.response.send_message(
+                "O usuário escolheu ticket",
+                ephemeral=True,
+                view=CreateTicket('Locutor')
+            )
 
 
 
