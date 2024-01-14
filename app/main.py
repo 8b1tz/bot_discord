@@ -7,6 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from models import (Badge, Enable, Friendship, Group, Handitem, Room, User,
                     UserBadge, UserGroup, UserRoom)
+from scripts import get_enable_by_id_or_api
 
 Base.metadata.create_all(bind=engine, tables=[
     Enable.__table__,
@@ -22,8 +23,8 @@ Base.metadata.create_all(bind=engine, tables=[
 
 load_dotenv()
 
-TOKEN = os.getenv('DISCORD_BOT_SECRET')
-id_server = os.getenv('ID_SERVER')
+TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GOcXeE.PvJlMb1pDymHo-4iWng9I55FP-7-x9vdI36l10'
+id_server = '1187985085249630208'
 
 
 class Dropdown(discord.ui.Select):
@@ -136,8 +137,7 @@ class CreateTicket(discord.ui.View):
             await ticket.edit(invitable=False)      
         await interaction.response.send_message(ephemeral=True, 
                                                 content=f"Criei um ticket para você! {ticket.mention}")
-        await ticket.send(f"✉️ **|** {interaction.user.mention} \   
-                        ticket criado! \n\n <@1193661140673245276>")
+        await ticket.send(f"✉️ **|** {interaction.user.mention} ticket criado! \n\n <@1193661140673245276>")
         
 
 
@@ -195,9 +195,12 @@ async def fecharticket(interaction: discord.Interaction):
         await interaction.response.send_message(e, ephemeral=True)
 
 
-# @tree.command(guild=discord.Object(id=id_server), name='enable')
-# async def enable(interaction: discord.Interaction):
-#     await interaction.response.send_message('teste enable', ephemeral=True)
+@tree.command(guild=discord.Object(id=id_server), name='enable')
+async def enable(interaction: discord.Interaction, id_enable: int):
+    response = get_enable_by_id_or_api(id_enable)
+    await interaction.response.send_message(response, ephemeral=True)
+
+
 
 
 # @tree.command(guild=discord.Object(id=id_server), name='handitem')

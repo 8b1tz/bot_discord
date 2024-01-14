@@ -14,7 +14,8 @@ class User(Base):
     # Relacionamentos
     friendships = relationship(
         'Friendship',
-        back_populates='user_id',
+        primaryjoin="User.username == Friendship.user_id",
+        back_populates='user',
         cascade="all, delete-orphan"
     )
     groups = relationship("Group", secondary="user_group")
@@ -66,4 +67,5 @@ class Friendship(Base):
     user_id = Column(String, ForeignKey('user.username'), primary_key=True)
     friend_id = Column(String, ForeignKey('user.username'), primary_key=True)
 
-    friends = relationship("User", back_populates="username")
+    user = relationship("User", back_populates="friendships", foreign_keys=[user_id])
+    friend = relationship("User", back_populates="friendships", foreign_keys=[friend_id])

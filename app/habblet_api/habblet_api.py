@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from .base_api import BaseHabbletApi
 
@@ -67,7 +68,7 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
-    def get_handitem(self) -> list[dict]:
+    def get_handitem(self) -> List[dict]:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
         )
@@ -88,7 +89,7 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
-    def get_enables(self) -> list[dict]:
+    def get_enables(self) -> List[dict]:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/"
             "avatar/EffectMap.json?v=109"
@@ -113,7 +114,7 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
-    def get_badges(self) -> list[dict]:
+    def get_badges(self) -> List[dict]:
         api_url = (
             "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
         )
