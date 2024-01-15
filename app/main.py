@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine, tables=[
 
 load_dotenv()
 
-TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GROq26.th6meQoav1q592FbWVhnjSEtGUw9UzrEI7UV3o'
+TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GGf3kN.MtPR6KDHG_T9FiSDH1kwFmdSO3s_9Ko1kEqTxs'
 id_server = '1187985085249630208'
 
 
