@@ -1,7 +1,11 @@
 from habblet_api import HabbletApi
 from models import Enable, Handitem
-from repository import (get_enable_by_id, get_handitem_by_id, insert_enable,
-                        insert_handitem)
+from repository import (
+    get_enable_by_id,
+    get_handitem_by_id,
+    insert_enable,
+    insert_handitem,
+)
 
 
 def get_enable_by_id_or_api(enable_id: str):
@@ -19,8 +23,8 @@ def get_enable_by_id_or_api(enable_id: str):
     return f'O enable com o id {enable_id} não foi encontrado.'
 
 
-def get_hand_item_by_id_or_api(hand_item_id: str):
-    hand_item = get_handitem_by_id(hand_item_id=hand_item_id)
+def get_hand_item_by_id_or_api(hand_item_id: int):
+    hand_item = get_handitem_by_id(handitem=hand_item_id)
     if hand_item:
         return hand_item
     hb = HabbletApi()
@@ -33,4 +37,8 @@ def get_hand_item_by_id_or_api(hand_item_id: str):
         )
         insert_handitem(handitem=hand_item)
         return hand_item
+<<<<<<< HEAD
     return f'O handitem com o id {hand_item_id} não foi encontrado.'
+=======
+    return "NÃO ACHOU"
+>>>>>>> d812b8f16a52e7c777f3281223012136901ce0b8
