@@ -270,4 +270,15 @@ async def handitem(interaction: discord.Interaction, id_handitem: str):
     response = get_hand_item_by_id_or_api(id_handitem)
     await interaction.response.send_message(response, ephemeral=True)
 
+
+@tree.command(guild=discord.Object(id=id_server), name='enable')
+async def wired(interaction: discord.Interaction, wired_name: str, wired_type: str = None):
+    pass
+
+
+@tree.command(guild=discord.Object(id=id_server), name='enable')
+async def user(interaction: discord.Interaction, username: str):
+    pass
+
+
 aclient.run(TOKEN)

@@ -11,7 +11,6 @@ class User(Base):
     image_id = Column(String)
     gender = Column(String(1))
 
-    # Relacionamentos
     friendships = relationship(
         'Friendship',
         primaryjoin="User.username == Friendship.user_id",
