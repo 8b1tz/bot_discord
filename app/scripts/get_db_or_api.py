@@ -1,7 +1,11 @@
 from habblet_api import HabbletApi
 from models import Enable, Handitem
-from repository import (get_enable_by_id, get_handitem_by_id, insert_enable,
-                        insert_handitem)
+from repository import (
+    get_enable_by_id,
+    get_handitem_by_id,
+    insert_enable,
+    insert_handitem,
+)
 
 
 def get_enable_by_id_or_api(enable_id: int):
@@ -16,11 +20,11 @@ def get_enable_by_id_or_api(enable_id: int):
         enable = Enable(id=filtered_enable[0]["id"], name=filtered_enable[0]["name"])
         insert_enable(enable=enable)
         return enable
-    return 'NÃO ACHOU'
+    return "NÃO ACHOU"
 
 
 def get_hand_item_by_id_or_api(hand_item_id: int):
-    hand_item = get_handitem_by_id(hand_item_id=hand_item_id)
+    hand_item = get_handitem_by_id(handitem=hand_item_id)
     if hand_item:
         return hand_item
     hb = HabbletApi()
@@ -33,4 +37,4 @@ def get_hand_item_by_id_or_api(hand_item_id: int):
         )
         insert_handitem(handitem=hand_item)
         return hand_item
-    return 'NÃO ACHOU'
+    return "NÃO ACHOU"
