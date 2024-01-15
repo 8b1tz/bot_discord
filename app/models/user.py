@@ -27,7 +27,7 @@ class Group(Base):
     __tablename__ = "group"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
-    users = relationship("User", secondary="user_group")
+    users = relationship("User", secondary="user_group", overlaps="groups")
 
 
 class UserGroup(Base):
@@ -40,7 +40,7 @@ class Room(Base):
     __tablename__ = "room"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
-    users = relationship("User", secondary="user_room")
+    users = relationship("User", secondary="user_room", overlaps="rooms")
 
 
 class UserRoom(Base):
@@ -53,7 +53,7 @@ class Badge(Base):
     __tablename__ = "badge"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
-    users = relationship("User", secondary="user_badge")
+    users = relationship("User", secondary="user_badge", overlaps="badges")
 
 
 class UserBadge(Base):

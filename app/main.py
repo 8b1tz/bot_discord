@@ -7,7 +7,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from models import (Badge, Enable, Friendship, Group, Handitem, Room, User,
                     UserBadge, UserGroup, UserRoom)
-from scripts import get_enable_by_id_or_api
+from scripts import get_enable_by_id_or_api, get_hand_item_by_id_or_api
 
 Base.metadata.create_all(bind=engine, tables=[
     Enable.__table__,
@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine, tables=[
 
 load_dotenv()
 
-TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GOcXeE.PvJlMb1pDymHo-4iWng9I55FP-7-x9vdI36l10'
+TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GROq26.th6meQoav1q592FbWVhnjSEtGUw9UzrEI7UV3o'
 id_server = '1187985085249630208'
 
 
@@ -194,20 +194,6 @@ async def fecharticket(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message(e, ephemeral=True)
 
-
-@tree.command(guild=discord.Object(id=id_server), name='enable')
-async def enable(interaction: discord.Interaction, id_enable: int):
-    response = get_enable_by_id_or_api(id_enable)
-    await interaction.response.send_message(response, ephemeral=True)
-
-
-
-
-# @tree.command(guild=discord.Object(id=id_server), name='handitem')
-# async def handitem(interaction: discord.Interaction):
-#     await interaction.response.send_message('teste handitem', ephemeral=True)
-
-
 class TicketButtons(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -273,5 +259,15 @@ class TicketButtons(discord.ui.View):
             )
 
 
+@tree.command(guild=discord.Object(id=id_server), name='enable')
+async def enable(interaction: discord.Interaction, id_enable: str):
+    response = get_enable_by_id_or_api(id_enable)
+    await interaction.response.send_message(response, ephemeral=True)
+
+
+@tree.command(guild=discord.Object(id=id_server), name='handitem')
+async def handitem(interaction: discord.Interaction, id_handitem: str):
+    response = get_hand_item_by_id_or_api(id_handitem)
+    await interaction.response.send_message(response, ephemeral=True)
 
 aclient.run(TOKEN)
