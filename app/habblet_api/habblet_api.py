@@ -122,15 +122,18 @@ class HabbletApi(BaseHabbletApi):
         if response.status_code == 200:
             pattern = re.compile(r"badge_name_(?!ACH)(\w+)")
             data = response.json()
-            dict_badges = {}
+            list_badges = []
             for chave in data.keys():
                 if pattern.match(chave):
                     badge_id = re.search(r"badge_name_(\w+)", chave).group(1)
-                    dict_badges[badge_id] = {
-                        "name": data[f"badge_name_{badge_id}"],
-                        "desc": data.get(f"badge_desc_{badge_id}", ""),
-                    }
-            return dict_badges
+                    list_badges.append(
+                        {
+                            "id": badge_id,
+                            "name": data[f"badge_name_{badge_id}"],
+                            "desc": data.get(f"badge_desc_{badge_id}", ""),
+                        }
+                    )
+            return list_badges
 
         raise Exception(
             f"Falha na requisição para API: {api_url}. "
