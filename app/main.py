@@ -7,7 +7,8 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from models import (Badge, Enable, Friendship, Group, Handitem, Room, User,
                     UserBadge, UserGroup, UserRoom)
-from scripts import get_enable_by_id_or_api, get_hand_item_by_id_or_api
+from scripts import (get_badge_by_id_or_api, get_enable_by_id_or_api,
+                     get_hand_item_by_id_or_api, get_wired_by_name_or_api)
 
 Base.metadata.create_all(bind=engine, tables=[
     Enable.__table__,
@@ -23,7 +24,7 @@ Base.metadata.create_all(bind=engine, tables=[
 
 load_dotenv()
 
-TOKEN = 'MTE4MzUzMDAyMDI3NTIzNjkyNA.GGf3kN.MtPR6KDHG_T9FiSDH1kwFmdSO3s_9Ko1kEqTxs'
+TOKEN = os.getenv('TOKEN')
 id_server = '1187985085249630208'
 
 
@@ -194,64 +195,59 @@ async def fecharticket(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message(e, ephemeral=True)
 
+
 class TicketButtons(discord.ui.View):
     def __init__(self):
         super().__init__()
 
-    @discord.ui.button(label="Promotor",style=discord.ButtonStyle.gray)
-    async def promoter(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Promotor", style=discord.ButtonStyle.gray)
+    async def promoter(self, interaction: discord.Interaction,
+                       button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
                 view=CreateTicket('Promotor')
             )
 
-    @discord.ui.button(label="Construtor",style=discord.ButtonStyle.gray)
-    async def construct(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Construtor", style=discord.ButtonStyle.gray)
+    async def construct(self, interaction: discord.Interaction,
+                        button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
                 view=CreateTicket('Construtor')
             )
 
-    @discord.ui.button(label="Programador",style=discord.ButtonStyle.gray)
-    async def programmer(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Programador", style=discord.ButtonStyle.gray)
+    async def programmer(self, interaction: discord.Interaction,
+                         button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
                 view=CreateTicket('Programador')
             )
 
-    @discord.ui.button(label="Marketing",style=discord.ButtonStyle.gray)
-    async def marketing(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Marketing", style=discord.ButtonStyle.gray)
+    async def marketing(self, interaction: discord.Interaction,
+                        button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
                 view=CreateTicket('Marketing')
             )
 
-    @discord.ui.button(label="Conteúdo",style=discord.ButtonStyle.gray)
-    async def content(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Conteúdo", style=discord.ButtonStyle.gray)
+    async def content(self, interaction: discord.Interaction,
+                      button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
                 view=CreateTicket('Conteudo')
             )
         
-    @discord.ui.button(label="Locutor",style=discord.ButtonStyle.gray)
-    async def locuter(self,
-        interaction: discord.Interaction,
-        button: discord.ui.Button):
+    @discord.ui.button(label="Locutor", style=discord.ButtonStyle.gray)
+    async def locuter(self, interaction: discord.Interaction,
+                      button: discord.ui.Button):
         await interaction.response.send_message(
                 "O usuário escolheu ticket",
                 ephemeral=True,
@@ -271,14 +267,24 @@ async def handitem(interaction: discord.Interaction, id_handitem: str):
     await interaction.response.send_message(response, ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=id_server), name='enable')
-async def wired(interaction: discord.Interaction, wired_name: str, wired_type: str = None):
-    pass
+@tree.command(guild=discord.Object(id=id_server), name='wired')
+async def wired(interaction: discord.Interaction, wired_name: str = None, 
+                wired_type: str = None):
+    if wired_name:
+        response = get_wired_by_name_or_api(wired_name)
+    else:
+        pass
+    await interaction.response.send_message(response, ephemeral=True)
 
 
-@tree.command(guild=discord.Object(id=id_server), name='enable')
+@tree.command(guild=discord.Object(id=id_server), name='user')
 async def user(interaction: discord.Interaction, username: str):
     pass
 
+
+@tree.command(guild=discord.Object(id=id_server), name='badge')
+async def badge(interaction: discord.Interaction, id_badge: str):
+    response = get_badge_by_id_or_api(id_badge)
+    await interaction.response.send_message(response, ephemeral=True)
 
 aclient.run(TOKEN)

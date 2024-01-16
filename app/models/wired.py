@@ -15,8 +15,7 @@ class Type(Base):
 
 class Wired(Base):
     __tablename__ = "wired"
-    id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    name = Column(String)
+    name = Column(String, primary_key=True, nullable=False, unique=True)
     type_id = Column(Integer, ForeignKey('types.id'))
     description = Column(String)
 
