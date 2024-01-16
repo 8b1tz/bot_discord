@@ -52,6 +52,7 @@ class Badge(Base):
     __tablename__ = "badge"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
+    description = Column(String)
     users = relationship("User", secondary="user_badge", overlaps="badges")
 
 

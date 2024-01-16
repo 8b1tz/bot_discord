@@ -17,11 +17,6 @@ def get_user_by_name(db: Session, username: str) -> User:
 
 
 @dec_session_local
-def get_all_users(db: Session) -> list[User]:
-    return db.query(User).all()
-
-
-@dec_session_local
 def update_player(db: Session, user_id: str, updated_user: User) -> User:
     existing_item = db.query(User).filter(User.id == user_id).first()
     if existing_item:

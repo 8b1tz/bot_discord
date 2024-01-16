@@ -3,8 +3,8 @@ from models import Wired
 
 
 @dec_session_local
-def get_wired_by_id(db: SessionLocal, wired_id: str) -> Wired:
-    return db.query(Wired).filter(Wired.id == wired_id).first()
+def get_wired_by_type(db: SessionLocal, wired_type: str) -> Wired:
+    return db.query(Wired).filter(Wired.type == wired_type).first()
 
 
 @dec_session_local
