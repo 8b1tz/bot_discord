@@ -1,11 +1,14 @@
 from habblet_api import HabbletApi
-from models import Badge, Enable, Handitem
+from models import Badge, Enable, Handitem, Wired
 from repository import (
     get_badge_by_id,
     get_enable_by_id,
     get_handitem_by_id,
+    get_wired_by_name,
+    insert_badge,
     insert_enable,
     insert_handitem,
+    insert_wired,
 )
 
 
@@ -51,5 +54,21 @@ def get_badge_by_id_or_api(badge_id: str):
     filtered_badge = list(filter(lambda x: str(x["id"]) == badge_id, list_badge))[0]
     if filtered_badge:
         badge = Badge(id=filtered_badge["id"], name=filtered_badge["name"])
+        insert_badge(badge=badge)
         return badge
     return f"O badge com o id {badge_id} não foi encontrado."
+
+
+def get_wired_by_name_or_api(wired_name: str):
+    wired = get_wired_by_name(wired_name=wired_name)
+    if wired:
+        return wired
+
+    hb = HabbletApi()
+    list_wired = hb.get_wireds()
+    filtered_wired = list(filter(lambda x: str(x["name"]) == wired_name, list_wired))[0]
+    if filtered_wired:
+        wired = Wired(name=filtered_wired["name"], description=filtered_wired["desc"])
+        insert_wired(wired=wired)
+        return wired
+    return f"O badge com o nome {wired_name} não foi encontrado."
