@@ -140,5 +140,19 @@ class HabbletApi(BaseHabbletApi):
             f"Status Code: {response.status_code}"
         )
 
+    def get_wireds(self):
+        api_url = (
+            "https://images.habblet.city/leet-asset-bundles/gamedata/habblet_texts.json"
+        )
+        response = self._get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            keys = filter(
+                lambda x: re.match(r"wiredfurni.params.(\w+)", x), data.keys()
+            )
+            return [
+                {"name": key.split(".")[-1], "desc": data[key]} for key in list(keys)
+            ]
+
     def get_new_badge_in_game(self):
         pass
