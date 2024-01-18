@@ -1,13 +1,15 @@
 from habblet_api import HabbletApi
-from models import Badge, Enable, Handitem, Wired
+from models import Badge, Enable, Handitem, User, Wired
 from repository import (
     get_badge_by_id,
     get_enable_by_id,
     get_handitem_by_id,
+    get_user_by_name,
     get_wired_by_name,
     insert_badge,
     insert_enable,
     insert_handitem,
+    insert_user,
     insert_wired,
 )
 
@@ -72,3 +74,24 @@ def get_wired_by_name_or_api(wired_name: str):
         insert_wired(wired=wired)
         return wired
     return f"O badge com o nome {wired_name} não foi encontrado."
+
+
+def get_user_by_name_or_api(user_name: str):
+    user = get_user_by_name(username=user_name)
+    if user:
+        return user
+
+    hb = HabbletApi()
+    user_infos = hb.get_user_by_name(user_name)
+    if user_infos:
+        user = User(
+            username=user_infos.get("username", ""),
+            reg_date=user_infos.get("reg_date", ""),
+            achievement_points=user_infos.get("achievement_points", ""),
+            image_id=user_infos.get("figure", ""),
+            gender=user_infos.get("gender", ""),
+        )
+        user = insert_user(user=user)
+        return user
+
+    return f"O usuario com o nome {user_name} não foi encontrado."
