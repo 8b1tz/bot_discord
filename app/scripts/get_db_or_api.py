@@ -14,7 +14,7 @@ from repository import (
 )
 
 
-def get_enable_by_id_or_api(enable_id: str):
+def get_enable_by_id_or_api(enable_id: str) -> Enable | str:
     enable = get_enable_by_id(enable_id=enable_id)
     if enable:
         return enable
@@ -28,7 +28,7 @@ def get_enable_by_id_or_api(enable_id: str):
     return f"O enable com o id {enable_id} não foi encontrado."
 
 
-def get_hand_item_by_id_or_api(hand_item_id: str):
+def get_hand_item_by_id_or_api(hand_item_id: str) -> Handitem | str:
     hand_item = get_handitem_by_id(handitem_id=hand_item_id)
     if hand_item:
         return hand_item
