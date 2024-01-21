@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import Enable, Handitem
 from scripts import get_enable_by_id_or_api, get_hand_item_by_id_or_api
 
 app = FastAPI()
@@ -17,13 +16,13 @@ app.add_middleware(
 
 
 @app.get("/enable/{id}")
-async def get_enable_by_id(id: int) -> Enable:
+async def get_enable_by_id(id: int):
     enable = get_enable_by_id_or_api(id)
     return enable
 
 
 @app.get("/handitem/{id}")
-async def get_handitem_by_id(id: int) -> Handitem:
+async def get_handitem_by_id(id: int):
     handitem = get_hand_item_by_id_or_api(id)
     return handitem
 
