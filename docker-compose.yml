@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  server:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    entrypoint: /app/docker/app/server-entrypoint.sh
+    ports:
+      - 8080:8080
+    environment:
+      - POSTGRES_DB: app
+      - POSTGRES_HOST: db
+      - POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD: postgres
+      - POSTGRES_PORT: 5432
+    depends_on:
+      - db
   db:
     restart: unless-stopped
     image: postgres:14-alpine
