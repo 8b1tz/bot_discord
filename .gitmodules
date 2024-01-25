@@ -1,0 +1,3 @@
+[submodule "font-end"]
+	path = font-end
+	url = https://github.com/AnaLinsDev/nuxt_habblet_app
